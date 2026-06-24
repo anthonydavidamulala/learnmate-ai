@@ -47,25 +47,25 @@ st.markdown("""
 
     /* Header styling with linear gradient */
     .header-container {
-        padding: 2rem 0rem 1rem 0rem;
+        padding: 1.2rem 0rem 0.6rem 0rem;
         text-align: center;
         background: linear-gradient(180deg, rgba(124, 58, 237, 0.1) 0%, rgba(13, 14, 21, 0) 100%);
         border-radius: 12px;
-        margin-bottom: 2rem;
+        margin-bottom: 1.2rem;
     }
 
     .main-title {
-        font-size: 2.8rem !important;
+        font-size: 2.5rem !important;
         font-weight: 800 !important;
         background: linear-gradient(135deg, #a78bfa 0%, #3b82f6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem;
     }
 
     .subtitle {
         color: #94a3b8;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 400;
     }
 
@@ -74,8 +74,8 @@ st.markdown("""
         background: rgba(30, 32, 50, 0.6);
         border: 1px solid rgba(167, 139, 250, 0.15);
         border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
@@ -93,7 +93,7 @@ st.markdown("""
         font-size: 0.75rem;
         font-weight: 600;
         border-radius: 9999px;
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
@@ -109,8 +109,8 @@ st.markdown("""
         background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%);
         border: 1px solid rgba(99, 102, 241, 0.2);
         border-radius: 16px;
-        padding: 1.2rem;
-        margin-bottom: 1.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
         margin-left: 20%;
         color: #f1f5f9;
         box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.15);
@@ -156,6 +156,45 @@ st.markdown("""
         transform: translateY(-1px) !important;
         box-shadow: 0 6px 16px 0 rgba(79, 70, 229, 0.4) !important;
         background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+    }
+
+    /* Compact chat input so it does not block the response */
+    div[data-testid="stBottomBlockContainer"] {
+        padding: 0.25rem 1rem 0.35rem 1rem !important;
+        background: rgba(13, 14, 21, 0.96) !important;
+    }
+
+    div[data-testid="stChatInput"] {
+        min-height: 50px !important;
+        max-height: 60px !important;
+        padding: 0 !important;
+    }
+
+    div[data-testid="stChatInput"] textarea,
+    textarea[aria-label="Ask a study plan, debug code, request a quiz..."] {
+        min-height: 38px !important;
+        height: 38px !important;
+        max-height: 48px !important;
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+        font-size: 0.95rem !important;
+        line-height: 1.2rem !important;
+    }
+
+    div[data-testid="stChatInput"] button {
+        width: 38px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        margin-top: 0 !important;
+    }
+
+    .main .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 4.5rem !important;
+    }
+
+    .chat-bottom-spacer {
+        height: 85px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -240,9 +279,7 @@ with st.sidebar:
     
     for qq in quick_queries:
         if st.button(qq[:35] + "..." if len(qq) > 35 else qq, key=f"quick_{qq}", use_container_width=True):
-            # Pre-populate session variables or handle direct route
             st.session_state.user_query = qq
-            # Trigger execute on quick queries by injecting standard submit behavior
             st.session_state.run_quick_query = True
 
 # MAIN CHAT PANEL
@@ -267,7 +304,6 @@ with chat_placeholder:
             """, unsafe_allow_html=True)
 
 # INTERACTIVE QUIZ RENDERER
-# If a quiz is currently generated and stored in st.session_state, show it as an interactive widget!
 if st.session_state.active_quiz:
     quiz = st.session_state.active_quiz
     st.markdown(f"""
@@ -280,7 +316,6 @@ if st.session_state.active_quiz:
     with st.form("interactive_quiz_form"):
         for q_idx, q in enumerate(quiz.questions):
             st.markdown(f"**Question {q_idx + 1}:** {q.question_text}")
-            # Get previous choice or default to None
             choice = st.radio(
                 "Select one option:", 
                 q.options, 
@@ -289,7 +324,6 @@ if st.session_state.active_quiz:
             )
             st.session_state.selected_quiz_answers[q_idx] = choice
             
-            # Show inline feedback if graded
             if q_idx in st.session_state.quiz_feedback:
                 is_correct, feedback_msg = st.session_state.quiz_feedback[q_idx]
                 if is_correct:
@@ -298,9 +332,8 @@ if st.session_state.active_quiz:
                     st.error(f"Incorrect. {feedback_msg}")
             st.markdown("---")
             
-        submitted = st.form_submit_form_processing = st.form_submit_button("Grade Quiz")
+        submitted = st.form_submit_button("Grade Quiz")
         if submitted:
-            # Validate all questions
             correct_count = 0
             for q_idx, q in enumerate(quiz.questions):
                 selected = st.session_state.selected_quiz_answers.get(q_idx)
@@ -312,16 +345,16 @@ if st.session_state.active_quiz:
                 else:
                     st.session_state.quiz_feedback[q_idx] = (False, "No answer selected.")
             
-            # Show summary
             total = len(quiz.questions)
             st.success(f"Grading complete! You scored {correct_count} out of {total} correct.")
             
-            # If student scored perfectly, mark the topic as completed in progress tracker!
             if correct_count == total and quiz.topic:
                 progress_store.mark_completed(quiz.topic)
                 st.toast(f"Congratulations! Topic '{quiz.topic}' marked as completed!", icon="🎉")
-                # Trigger a refresh of the sidebar progress
                 st.rerun()
+
+# Add space so the fixed chat input does not cover the last response
+st.markdown('<div class="chat-bottom-spacer"></div>', unsafe_allow_html=True)
 
 # Chat Input field
 user_query = st.chat_input("Ask a study plan, debug code, request a quiz...")
@@ -333,28 +366,21 @@ if getattr(st.session_state, "run_quick_query", False) and getattr(st.session_st
     st.session_state.user_query = None
 
 if user_query:
-    # Render user query first
     st.session_state.messages.append({"role": "user", "content": user_query})
     
-    # Process request using Orchestrator
     with st.spinner("LearnMate AI is thinking..."):
         agent_name, response_text = st.session_state.orchestrator.route_request(user_query)
         
-        # If the routed agent was the quiz generator, let's load/parse it as an active interactive quiz
         if agent_name == "quiz_generator":
-            # Generate structured quiz using the quiz agent
             quiz_agent = st.session_state.orchestrator.quiz_agent
             structured_quiz = quiz_agent.generate_quiz(user_query)
             st.session_state.active_quiz = structured_quiz
             st.session_state.selected_quiz_answers = {}
             st.session_state.quiz_feedback = {}
-            # Display a nice message in the chat
             response_text = f"I've generated a quiz about **{structured_quiz.topic.title()}** for you! Scroll down below the chat window to take it interactive! 📝"
         else:
-            # For non-quiz agents, clear any old active quiz to keep screen clean
             st.session_state.active_quiz = None
             
-        # Save response
         st.session_state.messages.append({
             "role": "assistant",
             "content": response_text,
