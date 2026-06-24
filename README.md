@@ -1,85 +1,369 @@
-# LearnMate AI - Multi-Agent Study & Coding Coach
+# 🎓 LearnMate AI - Multi-Agent Study & Coding Coach
 
-LearnMate AI is a multi-agent study and coding coach designed for students learning Python programming, data science, and AI. It guides learners through curriculum roadmaps, details topic explanations, debugs beginner code safely, generates interactive topic-based quizzes, and monitors learning progress.
+**LearnMate AI** is a multi-agent study and coding coach designed to help students learn **Python programming, data science, and AI** in a guided, safe, and interactive way.
 
-This project is built as a multi-agent harness demonstrating:
-- Multi-agent orchestration
-- Agent skills (using skill.md definition files)
-- Input/output safety and security guardrails
-- Local JSON storage progress persistence
-- Spec-driven development and automated evaluation
+It helps learners create study plans, understand beginner coding errors, generate quizzes, track progress, and receive safe learning guidance through a coordinated multi-agent system.
+
+This project was built for the **Kaggle 5-Day AI Agents Capstone Project** under the **Agents for Good** track.
 
 ---
 
-## 🚀 Setup & Installation
+## 🌟 Project Overview
 
-### 1. Prerequisites
-Ensure you have Python 3.10+ installed.
+Many beginner students struggle with knowing what to study next, debugging simple programming errors, practicing consistently, and tracking their progress.
 
-### 2. Install Dependencies
-Set up the virtual environment and install the required packages:
-```bash
-# Create virtual environment (if not already created)
-python -m venv .venv
+LearnMate AI solves this by using specialized agents that work together like a small learning team:
 
-# Activate virtual environment
-# On Windows:
-.venv\Scripts\activate
-# On macOS/Linux:
-source .venv/bin/activate
+* A planner that creates study roadmaps.
+* A debugger that explains code errors.
+* A quiz generator that creates practice questions.
+* A progress tracker that remembers completed topics.
+* A safety reviewer that blocks harmful requests.
+* An orchestrator that routes every request to the right agent.
 
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### 3. Environment Variables
-Create a `.env` file in the root directory (you can copy from `.env.example`) and fill in your Gemini Developer API Key:
-```env
-GOOGLE_API_KEY=your_gemini_api_key_here
-GOOGLE_GENAI_USE_ENTERPRISE=FALSE
-```
-*Note: Make sure `.env` is never committed to Git.*
+The goal is to make learning programming and AI more beginner-friendly, structured, and safe.
 
 ---
 
-## 💻 Running the Application
+## ✨ Key Features
 
-You can interact with the coach via the Command Line Interface (CLI) or the rich Streamlit Web Dashboard:
+### 🧭 Study Planner Agent
 
-### Option A: Streamlit Web Dashboard (Recommended)
-Start the web app:
-```bash
-streamlit run app.py
+Creates beginner-friendly study plans for programming, data science, and AI topics.
+
+Example:
+
+```text
+Create a Python study plan for a beginner
 ```
-This launches a beautiful local web interface in your browser showing:
-- Interactive chatbot console.
-- A **Study Room Sidebar** showing syllabus progress, a core topics completion checklist, and active recommendations on what to learn next.
-- Stateful **Interactive Quizzes** where you can submit options, get instant feedback, and mark topics completed on scoring 100%.
 
-### Option B: Command Line Interface (CLI)
-Start the CLI application:
-```bash
-python main.py
+### 🐍 Code Debugger Agent
+
+Explains beginner Python errors and provides corrected examples.
+
+Example:
+
+```text
+Debug this code: for i in range(5) print(i)
 ```
-Type your requests (e.g., `"Create a study plan for functions"`, `"Debug my loops code"`, or `"Give me a quiz on lists"`) directly in the shell.
+
+### 🧪 Quiz Generator Agent
+
+Generates interactive quizzes for topics like Python lists, functions, dictionaries, NumPy, and data science basics.
+
+Example:
+
+```text
+Create a quiz about Python lists
+```
+
+### 📊 Progress Tracker Agent
+
+Tracks completed topics and recommends what the learner should study next.
+
+Example:
+
+```text
+Mark lists as completed
+```
+
+### 🛡️ Safety Reviewer Agent
+
+Checks user requests before they reach other agents and blocks unsafe actions.
+
+Example blocked request:
+
+```text
+Delete all files on my computer
+```
+
+### 🧠 Orchestrator Agent
+
+Acts as the central router that decides which specialized agent should handle each request.
 
 ---
 
-## 🧪 Running Tests
+## 🤖 AI Agent Concepts Demonstrated
 
-The test suite runs automatically with `pytest`. Run this command to verify that all agent routing logic, safety parameters, and quiz builders are functioning perfectly:
+This project demonstrates important concepts from the 5-Day AI Agents course:
 
-```bash
-python -m pytest
-```
+* Multi-agent orchestration
+* Agent routing
+* Agent skills using `skill.md` files
+* Safety and security guardrails
+* Tool use
+* Local memory and progress tracking
+* Offline fallback behavior
+* Spec-driven development
+* Evaluation-driven development
+* Automated testing with `pytest`
+
+---
+
+## 🧰 Tech Stack
+
+* **Python**
+* **Streamlit**
+* **Google ADK / Gemini integration**
+* **Pytest**
+* **JSON local storage**
+* **Git and GitHub**
+* **Markdown skill files**
+* **YAML specification files**
+
+---
+
+## 🖼️ Screenshots
+
+### 🏠 Home Page
+
+![Home Page](screenshots/01-home-page.png)
+
+### 🧭 Study Planner
+
+![Study Planner](screenshots/02-study-planner.png)
+
+### 🐍 Code Debugger
+
+![Code Debugger](screenshots/03-code-debugger.png)
+
+### 🧪 Quiz Generator
+
+![Quiz Generator](screenshots/04-quiz-generator.png)
+
+### 🛡️ Safety Reviewer
+
+![Safety Reviewer](screenshots/05-safety-reviewer.png)
+
+### ✅ Tests Passing
+
+![Tests Passing](screenshots/06-tests-passing.png)
 
 ---
 
 ## 📂 Project Structure
 
-- `agents/`: Python agent definitions (Orchestrator, Study Planner, Code Debugger, Quiz Agent, Progress Tracker, Safety Reviewer).
-- `skills/`: Markdown instructions defining behavioral guardrails for each agent role.
-- `tools/`: Backing libraries (Safety validations, local progress storage, quiz schema definitions).
-- `tests/`: Automated pytest modules validating routing, quiz generation, and safety filters.
-- `specs/`: Project specs and evaluation cases.
-- `data/`: Local storage folder for progress database.
+```text
+learnmate-ai/
+├── agents/
+│   ├── orchestrator.py
+│   ├── study_planner_agent.py
+│   ├── code_debugger_agent.py
+│   ├── quiz_agent.py
+│   ├── progress_agent.py
+│   └── safety_agent.py
+├── skills/
+│   ├── study_planner/
+│   ├── code_debugger/
+│   ├── quiz_generator/
+│   ├── progress_tracker/
+│   └── safety_reviewer/
+├── specs/
+│   ├── project_spec.md
+│   ├── requirements.yaml
+│   └── evaluation_cases.yaml
+├── tools/
+│   ├── progress_store.py
+│   ├── quiz_tools.py
+│   └── safety_tools.py
+├── screenshots/
+├── tests/
+├── data/
+├── app.py
+├── main.py
+├── requirements.txt
+├── AGENTS.md
+└── README.md
+```
+
+---
+
+## 🚀 Setup & Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/anthonydavidamulala/learnmate-ai.git
+cd learnmate-ai
+```
+
+### 2. Create a Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+### 3. Activate the Virtual Environment
+
+On Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+On macOS/Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+### 4. Install Dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root folder:
+
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
+GOOGLE_GENAI_USE_ENTERPRISE=FALSE
+```
+
+Important:
+
+```text
+.env should never be committed to GitHub.
+```
+
+The project also includes offline fallback behavior, so the app can still demonstrate core features when API quota is unavailable.
+
+---
+
+## 💻 Running the Application
+
+### Option A: Streamlit Web Dashboard
+
+```bash
+streamlit run app.py
+```
+
+This launches the web app in the browser with:
+
+* A clean chatbot interface
+* A Study Room sidebar
+* Progress tracking
+* Core syllabus checklist
+* Study recommendations
+* Interactive quizzes
+* Safety-reviewed responses
+
+### Option B: Command Line Interface
+
+```bash
+python main.py
+```
+
+You can then type requests such as:
+
+```text
+Create a study plan for functions
+Debug my Python loop
+Give me a quiz on lists
+Mark dictionaries as completed
+```
+
+---
+
+## 🧪 Running Tests
+
+Run the automated test suite:
+
+```bash
+python -m pytest
+```
+
+The tests check:
+
+* Agent routing
+* Safety blocking
+* Quiz generation
+* Progress tracking
+* Core tool behavior
+
+---
+
+## 🛡️ Safety Design
+
+LearnMate AI includes a Safety Reviewer Agent that checks requests before they are processed.
+
+It blocks unsafe requests such as:
+
+* Deleting files
+* Accessing private secrets
+* Harmful system actions
+* Dangerous instructions outside the learning purpose
+
+This keeps the system focused on safe educational support.
+
+---
+
+## 🔁 Offline Fallback
+
+The project includes offline fallback responses.
+
+This means LearnMate AI can still work even when:
+
+* Gemini API quota is exhausted
+* Internet access is unavailable
+* API credentials are missing during testing
+
+This makes the project easier to demo, test, and reproduce.
+
+---
+
+## 📌 Example Prompts
+
+```text
+Create a Python study plan for a beginner
+```
+
+```text
+Debug this code: for i in range(5) print(i)
+```
+
+```text
+Create a quiz about Python lists
+```
+
+```text
+Mark functions as completed
+```
+
+```text
+Delete all files on my computer
+```
+
+---
+
+## 🏁 Capstone Alignment
+
+LearnMate AI aligns with the **Agents for Good** category because it helps students learn technical skills more easily and safely.
+
+It also demonstrates practical agent engineering through:
+
+* Clear agent roles
+* A central orchestrator
+* Skills-based behavior definitions
+* Testing and evaluation
+* Safety-first design
+* Local progress memory
+* Streamlit user interface
+
+---
+
+## 👤 Author
+
+**Amulala Anthony David**
+
+---
+
+## 🔗 Repository
+
+```text
+https://github.com/anthonydavidamulala/learnmate-ai
+```
