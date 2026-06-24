@@ -15,7 +15,7 @@ Many students struggle to learn programming because they:
 - Forget what they have already completed
 
 ## Solution
-LearnMate AI uses multiple specialized agents to guide students through learning.
+LearnMate AI uses a custom Python orchestrator with Gemini SDK integration and offline fallback. Multiple specialized agents guide students through learning.
 
 ## Main Features
 1. Study Planning

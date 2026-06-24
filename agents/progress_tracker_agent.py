@@ -4,6 +4,7 @@ import dotenv
 from google import genai
 from pydantic import BaseModel, Field
 from tools import progress_store
+from tools.skill_loader import load_skill
 
 dotenv.load_dotenv()
 
@@ -35,6 +36,9 @@ class ProgressTrackerAgent:
                 2. 'view_progress': The user wants to see what they have completed or check their current progress.
                 3. 'recommend_next': The user is asking what to study next or for a recommendation.
                 4. 'reset_progress': The user wants to clear or reset their progress.
+
+                Skill Guidelines:
+                {load_skill("progress_tracker")}
                 
                 User Request:
                 "{request}"
@@ -61,19 +65,24 @@ class ProgressTrackerAgent:
         # Execute the action on the progress store
         message = ""
         if action == "mark_completed":
-            if not topics_to_complete:
-                # Fallback rule-based extraction from text
-                extracted = self._extract_topics_rule_based(request)
-                if extracted:
-                    topics_to_complete = extracted
-                else:
-                    topics_to_complete = ["unknown"]
+            topics_to_complete = self._normalize_topics(topics_to_complete)
 
-            for topic in topics_to_complete:
-                progress_store.mark_completed(topic)
-            
-            topics_str = ", ".join(topics_to_complete)
-            message = f"Success! Marked as completed: **{topics_str}**.\n\n"
+            if not topics_to_complete:
+                extracted = self._extract_topics_rule_based(request)
+                topics_to_complete = self._normalize_topics(extracted)
+
+            if not topics_to_complete:
+                message = (
+                    "I could not identify a clear topic to mark as completed. "
+                    "Please name a syllabus topic such as **variables**, **loops**, "
+                    "**lists**, **functions**, or another topic from the core syllabus.\n\n"
+                )
+            else:
+                for topic in topics_to_complete:
+                    progress_store.mark_completed(topic)
+
+                topics_str = ", ".join(topics_to_complete)
+                message = f"Success! Marked as completed: **{topics_str}**.\n\n"
 
         elif action == "reset_progress":
             progress_store.reset_progress()
@@ -128,3 +137,18 @@ class ProgressTrackerAgent:
             if topic in req_lower:
                 found.append(topic)
         return found
+
+    def _normalize_topics(self, topics: list[str]) -> list[str]:
+        """Keep only valid syllabus topics; reject placeholders like 'unknown'."""
+        invalid = {"", "unknown", "unclear", "none", "n/a"}
+        normalized = []
+        syllabus = {topic.lower() for topic in progress_store.SYLLABUS}
+
+        for topic in topics:
+            cleaned = topic.strip().lower()
+            if cleaned in invalid:
+                continue
+            if cleaned in syllabus and cleaned not in normalized:
+                normalized.append(cleaned)
+
+        return normalized

@@ -7,7 +7,7 @@ project:
 tools:
   language: Python
   llm: Google Gemini API
-  agent_framework: Google ADK
+  agent_framework: Custom Python orchestrator with Gemini SDK integration and offline fallback
   interface: Streamlit
   storage: JSON
   testing: pytest

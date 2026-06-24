@@ -3,6 +3,7 @@ import dotenv
 import json
 from google import genai
 from tools.quiz_tools import Quiz, format_quiz_to_markdown
+from tools.skill_loader import load_skill
 
 dotenv.load_dotenv()
 
@@ -200,12 +201,7 @@ class QuizAgent:
             return self._generate_offline_quiz(topic)
 
         try:
-            # Read instructions from skill.md
-            skill_path = os.path.join("skills", "quiz_generator", "skill.md")
-            instructions = ""
-            if os.path.exists(skill_path):
-                with open(skill_path, "r", encoding="utf-8") as f:
-                    instructions = f.read()
+            instructions = load_skill("quiz_generator")
 
             prompt = f"""
             You are a Quiz Generator Agent for programming and data science students.

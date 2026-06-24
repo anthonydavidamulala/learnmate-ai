@@ -1,6 +1,7 @@
 import os
 import dotenv
 from google import genai
+from tools.skill_loader import load_skill
 
 dotenv.load_dotenv()
 
@@ -102,12 +103,7 @@ class StudyPlannerAgent:
             return self._generate_offline_plan(request)
 
         try:
-            # Read instructions from skill.md
-            skill_path = os.path.join("skills", "study_planner", "skill.md")
-            instructions = ""
-            if os.path.exists(skill_path):
-                with open(skill_path, "r", encoding="utf-8") as f:
-                    instructions = f.read()
+            instructions = load_skill("study_planner")
 
             prompt = f"""
             You are a Study Planner Agent for programming and data science students.

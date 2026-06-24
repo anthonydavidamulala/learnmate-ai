@@ -3,6 +3,7 @@ import dotenv
 from google import genai
 from pydantic import BaseModel, Field
 from tools.safety_tools import is_safe_request
+from tools.skill_loader import load_skill
 
 # Load env variables
 dotenv.load_dotenv()
@@ -49,12 +50,7 @@ class SafetyReviewerAgent:
             return SafetyReport(safety_status="safe", reason="No API key configured, rule-based check passed.", safe_alternative="")
 
         try:
-            # Load skill instructions
-            skill_path = os.path.join("skills", "safety_reviewer", "skill.md")
-            instructions = ""
-            if os.path.exists(skill_path):
-                with open(skill_path, "r", encoding="utf-8") as f:
-                    instructions = f.read()
+            instructions = load_skill("safety_reviewer")
 
             prompt_content = f"""
             You are a Safety Reviewer Agent. Please evaluate the safety of the following student request.

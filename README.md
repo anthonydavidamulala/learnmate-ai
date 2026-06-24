@@ -79,7 +79,7 @@ Delete all files on my computer
 
 ### 🧠 Orchestrator Agent
 
-Acts as the central router that decides which specialized agent should handle each request.
+Acts as the central router that decides which specialized agent should handle each request. Implemented as a custom Python orchestrator with Gemini SDK integration and offline fallback.
 
 ---
 
@@ -103,13 +103,16 @@ This project demonstrates important concepts from the 5-Day AI Agents course:
 ## 🧰 Tech Stack
 
 * **Python**
+* **Custom Python orchestrator**
+* **Gemini SDK integration (`google-genai`)**
+* **Offline fallback behavior**
 * **Streamlit**
-* **Google ADK / Gemini integration**
 * **Pytest**
 * **JSON local storage**
 * **Git and GitHub**
-* **Markdown skill files**
-* **YAML specification files**
+* **Markdown skill files in `skills/`**
+* **YAML specification files in `specs/`**
+* **Architecture docs in `docs/architecture.md`**
 
 ---
 
@@ -150,8 +153,8 @@ learnmate-ai/
 │   ├── study_planner_agent.py
 │   ├── code_debugger_agent.py
 │   ├── quiz_agent.py
-│   ├── progress_agent.py
-│   └── safety_agent.py
+│   ├── progress_tracker_agent.py
+│   └── safety_reviewer_agent.py
 ├── skills/
 │   ├── study_planner/
 │   ├── code_debugger/
@@ -165,7 +168,10 @@ learnmate-ai/
 ├── tools/
 │   ├── progress_store.py
 │   ├── quiz_tools.py
-│   └── safety_tools.py
+│   ├── safety_tools.py
+│   └── skill_loader.py
+├── docs/
+│   └── architecture.md
 ├── screenshots/
 ├── tests/
 ├── data/
@@ -280,10 +286,14 @@ python -m pytest
 The tests check:
 
 * Agent routing
+* Evaluation cases from `specs/evaluation_cases.yaml`
 * Safety blocking
 * Quiz generation
+* Code debugger offline fallback
 * Progress tracking
 * Core tool behavior
+
+For architecture details, see `docs/architecture.md`.
 
 ---
 

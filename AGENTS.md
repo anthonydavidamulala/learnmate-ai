@@ -22,12 +22,13 @@ The system helps students:
 
 ## Technology Stack
 - Python
-- Google Gemini API
-- Google ADK
+- Custom Python orchestrator with Gemini SDK integration and offline fallback
+- Google Gemini API (`google-genai`)
 - Streamlit
 - python-dotenv
 - PyYAML
 - pytest
+- pydantic
 - JSON local storage
 
 ## Important Folders

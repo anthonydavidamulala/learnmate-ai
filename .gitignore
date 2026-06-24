@@ -5,3 +5,4 @@ __pycache__/
 data/progress.json
 .pytest_cache/
 .streamlit/
+.cursor/
