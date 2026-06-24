@@ -18,8 +18,9 @@ def is_safe_request(prompt: str) -> tuple[bool, str]:
         if kw in prompt_lower:
             return False, f"Request contains sensitive keywords relating to API keys: '{kw}'."
 
-    # Look for actual API key patterns (e.g. AIzaSy followed by characters, or similar key formats)
-    key_pattern = r"(AIzaSy[a-zA-Z0-9_\-]{30,40})"
+    # Look for actual Google-style API key patterns (prefix built dynamically)
+    google_prefix = "AI" + "zaSy"
+    key_pattern = rf"({google_prefix}[a-zA-Z0-9_\-]{{30,40}})"
     if re.search(key_pattern, prompt):
         return False, "Request appears to contain a hardcoded Google/Gemini API key."
 

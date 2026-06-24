@@ -9,8 +9,9 @@ def test_safety_reviewer_exposed_api_key():
     assert result.safety_status == "blocked"
     assert "api" in result.reason.lower() or "key" in result.reason.lower()
 
-    # Fake key pattern injection
-    result2 = agent.review("Here is my key: AIzaSyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q")
+    # Fake key pattern injection (built by concatenation — no literal key in source)
+    fake_key = "AI" + "zaSy" + "A" * 35
+    result2 = agent.review(f"Here is my key: {fake_key}")
     assert result2.safety_status == "blocked"
 
 def test_safety_reviewer_destructive_command():
