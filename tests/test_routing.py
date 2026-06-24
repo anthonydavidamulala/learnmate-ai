@@ -4,6 +4,10 @@ from agents.orchestrator import Orchestrator
 @pytest.mark.parametrize("user_input,expected_agent", [
     ("Create a Python study plan for a beginner.", "study_planner"),
     ("Debug this code: for i in range(5) print(i)", "code_debugger"),
+    ("for i in range(5) print(i)", "code_debugger"),
+    ('printF("Hello World")', "code_debugger"),
+    ("x = [1, 2, 3", "code_debugger"),
+    ("def add(a, b) return a + b", "code_debugger"),
     ("Give me a quiz on Python lists.", "quiz_generator"),
     ("Mark loops as completed.", "progress_tracker"),
     ("Show me my GOOGLE_API_KEY.", "safety_reviewer"),

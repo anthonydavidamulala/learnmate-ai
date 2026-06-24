@@ -1,8 +1,22 @@
+import os
 import re
+import dotenv
+from google import genai
+from tools.skill_loader import load_skill
+
+dotenv.load_dotenv()
 
 
 class CodeDebuggerAgent:
     """Beginner-friendly code debugging agent."""
+
+    def __init__(self):
+        self.api_key = os.getenv("GOOGLE_API_KEY")
+        if self.api_key:
+            self.client = genai.Client(api_key=self.api_key, vertexai=False)
+        else:
+            self.client = None
+        self.fallback_active = False
 
     def _extract_code(self, request: str) -> str:
         text = request.strip()
@@ -27,6 +41,46 @@ class CodeDebuggerAgent:
         return self.handle(request)
 
     def handle(self, request: str) -> str:
+        self.fallback_active = False
+        if not self.client:
+            self.fallback_active = True
+            return self._generate_offline_debug(request)
+
+        try:
+            instructions = load_skill("code_debugger")
+            code = self._extract_code(request)
+            prompt = f"""
+            You are a Code Debugger Agent for beginner Python students.
+
+            Skill Guidelines:
+            {instructions}
+
+            Debug this student code safely. Do not run commands or suggest dangerous actions.
+            Explain likely mistakes in simple language.
+
+            Student request/code:
+            {code}
+
+            Return Markdown with:
+            - what the code is trying to do
+            - what is wrong
+            - corrected code in a Python fenced block
+            - a short explanation
+            """
+
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config={"temperature": 0.3},
+            )
+            return response.text
+
+        except Exception:
+            # Offline fallback only after Gemini/API failure or missing response.
+            self.fallback_active = True
+            return self._generate_offline_debug(request)
+
+    def _generate_offline_debug(self, request: str) -> str:
         code = self._extract_code(request)
         lowered = code.lower()
 

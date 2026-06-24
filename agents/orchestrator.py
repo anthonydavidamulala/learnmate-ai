@@ -1,4 +1,5 @@
 import os
+import re
 import dotenv
 from google import genai
 from pydantic import BaseModel, Field
@@ -30,6 +31,45 @@ class Orchestrator:
         self.quiz_agent = QuizAgent()
         self.progress_tracker_agent = ProgressTrackerAgent()
 
+    def _looks_like_code(self, request: str) -> bool:
+        """Detect plain Python/code snippets without an explicit 'debug' keyword."""
+        text = request.strip()
+        if not text:
+            return False
+
+        lowered = text.lower()
+        natural_language_hints = [
+            "study plan",
+            "quiz",
+            "explain",
+            "what is",
+            "how do i",
+            "mark ",
+            "completed",
+            "progress",
+            "recommend",
+        ]
+        code_patterns = [
+            r"\bfor\s+\w+\s+in\s+",
+            r"\bwhile\s+\w+",
+            r"\bdef\s+\w+\s*\(",
+            r"\bclass\s+\w+",
+            r"\bprint\s*\(",
+            r"\bprintf\s*\(",
+            r"=\s*\[[^\]]*$",
+            r"\bdef\s+\w+\([^)]*\)\s+\w+",
+            r"\bimport\s+\w+",
+        ]
+
+        has_code_pattern = any(re.search(pattern, text, re.IGNORECASE) for pattern in code_patterns)
+        if not has_code_pattern:
+            return False
+
+        if any(hint in lowered for hint in natural_language_hints):
+            return bool(re.search(r"\b(def|for|while|print\s*\(|=\s*\[)", text, re.IGNORECASE))
+
+        return True
+
     def classify_request(self, request: str) -> str:
         """
         Classifies the incoming user request into the correct specialist agent role.
@@ -45,7 +85,7 @@ class Orchestrator:
             return "quiz_generator"
         if any(kw in req_lower for kw in ["mark", "completed", "done", "finished", "progress", "study next", "what should i learn next"]):
             return "progress_tracker"
-        if any(kw in req_lower for kw in ["debug", "error", "wrong", "fix", "syntax", "indented"]):
+        if any(kw in req_lower for kw in ["debug", "error", "wrong", "fix", "syntax", "indented"]) or self._looks_like_code(request):
             return "code_debugger"
         if any(kw in req_lower for kw in ["plan", "study plan", "roadmap", "curriculum", "explain"]):
             return "study_planner"
@@ -81,7 +121,7 @@ class Orchestrator:
                 pass
 
         # Fallback default routing based on context
-        if "code" in req_lower or "print(" in req_lower or "def " in req_lower:
+        if self._looks_like_code(request) or "code" in req_lower or "print(" in req_lower or "def " in req_lower:
             return "code_debugger"
         return "study_planner"
 

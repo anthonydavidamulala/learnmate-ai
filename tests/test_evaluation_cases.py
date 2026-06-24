@@ -4,6 +4,7 @@ import pytest
 import yaml
 
 from agents.orchestrator import Orchestrator
+from tools import progress_store
 
 
 def _load_evaluation_cases() -> list[dict]:
@@ -15,6 +16,13 @@ def _load_evaluation_cases() -> list[dict]:
     if isinstance(cases, dict):
         return list(cases.values())
     return cases
+
+
+@pytest.fixture
+def isolated_progress(monkeypatch, tmp_path):
+    progress_file = tmp_path / "progress.json"
+    monkeypatch.setattr(progress_store, "PROGRESS_FILE", str(progress_file))
+    return progress_file
 
 
 @pytest.fixture(scope="module")
@@ -36,7 +44,7 @@ def test_evaluation_case_routing(case, orchestrator):
     assert agent_name == case["expected_agent"]
 
 
-def test_evaluation_case_behaviors(orchestrator):
+def test_evaluation_case_behaviors(orchestrator, isolated_progress):
     for case in _load_evaluation_cases():
         case_id = case.get("id", "case")
         user_input = case["input"]
