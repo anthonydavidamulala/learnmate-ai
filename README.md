@@ -356,6 +356,42 @@ It also demonstrates practical agent engineering through:
 
 ---
 
+## 📘 Course Concept Alignment
+
+LearnMate AI was designed to clearly demonstrate practical concepts from the 5-Day AI Agents course.
+
+| Course Concept                    | Status                | How LearnMate AI Demonstrates It                                                                                          |
+| --------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Multi-agent orchestration**     | ✅ Implemented         | The system uses multiple specialized agents for study planning, debugging, quizzes, progress tracking, and safety review. |
+| **Orchestrator / routing agent**  | ✅ Implemented         | `orchestrator.py` routes each user request to the correct agent.                                                          |
+| **Agent skills**                  | ✅ Implemented         | Each agent has a `skill.md` file inside the `skills/` folder defining its role, behavior, and output expectations.        |
+| **Tool use**                      | ✅ Implemented         | Agents use tools such as `progress_store.py`, `quiz_tools.py`, and `safety_tools.py`.                                     |
+| **Memory / progress tracking**    | ✅ Implemented         | The app stores completed topics using local JSON storage.                                                                 |
+| **Safety guardrails**             | ✅ Implemented         | The Safety Reviewer Agent blocks unsafe requests before they are processed.                                               |
+| **Evaluation-driven development** | ✅ Implemented         | Automated tests validate routing, safety, quiz logic, and progress behavior using `pytest`.                               |
+| **Spec-driven development**       | ✅ Implemented         | The project includes `specs/`, `requirements.yaml`, `evaluation_cases.yaml`, and `AGENTS.md`.                             |
+| **Offline fallback behavior**     | ✅ Implemented         | The app continues working even when Gemini API quota is unavailable.                                                      |
+| **Sandbox-style safety**          | ✅ Implemented         | The code debugger analyzes beginner code but does not execute dangerous system commands.                                  |
+| **MCP server/tools**              | 🔮 Future improvement | A future version can expose learning tools through MCP for standardized tool connection.                                  |
+| **Agent-to-agent communication**  | 🔮 Future improvement | Future versions can allow specialized agents to collaborate more directly.                                                |
+| **Cloud deployment**              | 🔮 Future improvement | The current version runs locally, but it can later be deployed online.                                                    |
+| **Cloud database**                | 🔮 Future improvement | Local JSON storage can later be upgraded to Firebase, Supabase, or another cloud database.                                |
+
+---
+
+## 🔮 Future Improvements
+
+LearnMate AI currently focuses on a working and testable multi-agent learning assistant. Future versions can expand the system with:
+
+* **MCP server/tools** to connect agents with external learning tools in a standardized way.
+* **Agent-to-agent communication** for more advanced collaboration between specialized agents.
+* **Cloud deployment** so learners can access the app online without running it locally.
+* **Cloud database storage** such as Firebase or Supabase for syncing progress across devices.
+* **A safer code execution sandbox** for running beginner code in an isolated environment.
+* **More autonomous learning workflows** where the system can plan, quiz, grade, and recommend next steps automatically.
+
+---
+
 ## 👤 Author
 
 **Amulala Anthony David**
