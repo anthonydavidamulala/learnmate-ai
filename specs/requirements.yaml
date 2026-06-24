@@ -1,0 +1,72 @@
+project:
+  name: LearnMate AI
+  owner: Amulala Anthony David
+  track: Agents for Good
+  description: Multi-agent study and coding coach for students.
+
+tools:
+  language: Python
+  llm: Google Gemini API
+  agent_framework: Google ADK
+  interface: Streamlit
+  storage: JSON
+  testing: pytest
+
+features:
+  study_planner:
+    enabled: true
+    description: Creates learning plans and recommends next topics.
+
+  code_debugger:
+    enabled: true
+    description: Explains beginner code errors and suggests fixes safely.
+
+  quiz_generator:
+    enabled: true
+    description: Creates short topic-based quizzes.
+
+  progress_tracker:
+    enabled: true
+    description: Saves and loads completed topics.
+
+  safety_reviewer:
+    enabled: true
+    description: Checks for unsafe requests, secrets, and dangerous commands.
+
+security:
+  no_hardcoded_api_keys: true
+  use_env_file: true
+  env_file_must_not_be_committed: true
+  block_dangerous_commands: true
+  no_production_database_access: true
+  no_sensitive_personal_data_storage: true
+
+course_concepts:
+  - multi_agent_system
+  - harness_orchestration
+  - agent_skills
+  - progressive_disclosure
+  - safety_guardrails
+  - evaluation_testing
+  - spec_driven_development
+
+bdd_requirements:
+  - given: A student asks for a study plan
+    when: The request is submitted
+    then: The orchestrator routes it to the Study Planner Agent
+
+  - given: A student pastes beginner Python code
+    when: The request asks for debugging
+    then: The Code Debugger Agent explains the issue without running dangerous commands
+
+  - given: A student asks for a quiz
+    when: A topic is provided
+    then: The Quiz Agent generates questions and answers
+
+  - given: A student completes a topic
+    when: The progress tracker is called
+    then: The topic is saved locally
+
+  - given: A user enters an unsafe request
+    when: The safety reviewer checks it
+    then: The response blocks or warns about the unsafe action
